@@ -12,6 +12,7 @@ logo = Image.open("logo.jpeg")
 st.set_page_config(
     page_title="Lekha Yatra",
     layout="wide",
+    initial_sidebar_state="expanded",
     page_icon=logo
 )
 
@@ -114,16 +115,34 @@ else:
     if menu == "🏠 Home":
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.header("About Lekha Yatra")
+
+        st.header("Welcome to Lekha Yatra")
 
         st.write("""
-Lekha Yatra is a smart document management platform designed to help families organize, verify, and access important documents easily.
+    Lekha Yatra is a smart digital document management platform designed to help individuals and families organize, store, and access their important documents in one secure place.
 
-✔ Organizes documents  
-✔ Tracks expiry  
-✔ Application readiness  
-✔ Family vault  
+    In daily life, documents are often scattered across emails, cloud drives, messaging apps, and physical files, making them difficult to find when urgently needed. Lekha Yatra solves this problem by bringing everything together into a single, organized system.
+
+    The platform automatically categorizes documents into sections such as Government, Education, Finance, and Career, making them easy to manage and retrieve anytime.
+
+    Users can also track issue and expiry dates, receive alerts before documents expire, and check whether they are ready for applications like scholarships, jobs, admissions, or government services.
+
+    With features like quick search, document overview, readiness checking, and a family vault for multiple members, Lekha Yatra transforms scattered paperwork into a structured and reliable digital system.
+
+    Our goal is simple — to help users stay organized, prepared, and stress-free when important opportunities arise.
         """)
+
+        st.subheader("Key Takeaways")
+
+        st.write("""
+    ✔ Centralized storage for all important documents  
+    ✔ Automatic organization into categories  
+    ✔ Expiry tracking and alerts  
+    ✔ Quick search and easy retrieval  
+    ✔ Application readiness checker  
+    ✔ Support for multiple family members  
+        """)
+
         st.markdown('</div>', unsafe_allow_html=True)
 
     # -------------------------
