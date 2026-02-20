@@ -15,6 +15,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
     page_icon=logo
 )
+st.markdown("""
+    <style>
+        :root {
+            color-scheme: light;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # -------------------------
 # CUSTOM CSS (MATCH HTML THEME)
