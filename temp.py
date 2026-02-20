@@ -273,7 +273,7 @@ else:
             if d["expiry"] is not None and d["expiry"] < today
         )
 
-        expiring = sum(
+        expiring_soon = sum(
             1 for d in st.session_state.documents
             if d["expiry"] is not None and 0 <= (d["expiry"] - today).days <= 60
         )
@@ -302,7 +302,7 @@ else:
         c1, c2, c3 = st.columns(3)
         c1.metric("Total", total)
         c2.metric("Expired", expired)
-        c3.metric("Expiring Soon", expiring)
+        c3.metric("Expiring Soon", expiring_soon)
         if alerts:
             st.warning("Expiry Alerts")
             for a in alerts:
