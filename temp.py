@@ -261,9 +261,15 @@ else:
 
         today = date.today()
         total = len(st.session_state.documents)
-        expired = sum(1 for d in st.session_state.documents if d["expiry"] < today)
-        expiring = sum(1 for d in st.session_state.documents
-                       if 0 <= (d["expiry"] - today).days <= 60)
+        expired = sum(
+            1 for d in st.session_state.documents
+            if d["expiry"] is not None and d["expiry"] < today
+        )
+
+        expiring = sum(
+            1 for d in st.session_state.documents
+            if d["expiry"] is not None and 0 <= (d["expiry"] - today).days <= 60
+        )
 
         alerts = []   
         for d in st.session_state.documents:
