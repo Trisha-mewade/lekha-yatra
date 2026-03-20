@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lekha Yatra – From Paper Trails To Digital Ease</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #283593;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 16px auto 40px;
+      padding: 0 16px;
+    }
+    h2 {
+      margin-top: 24px;
+      margin-bottom: 8px;
+      color: #283593;
+    }
+    .card {
+      background: white;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .col {
+      flex: 1;
+      min-width: 260px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      margin-top: 8px;
+      margin-bottom: 2px;
+    }
+    input, select {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 13px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background: #283593;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    button.secondary {
+      background: #757575;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .status-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      color: white;
+    }
+    .READY { background: #2e7d32; }
+    .EXPIRING_SOON { background: #f9a825; }
+    .EXPIRED { background: #c62828; }
+    .INCOMPLETE { background: #616161; }
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .doc-meta {
+      font-size: 12px;
+      color: #555;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: #e3f2fd;
+      color: #1e88e5;
+      font-size: 11px;
+      margin-right: 4px;
+      margin-top: 4px;
+    }
+    .alert {
+      font-size: 12px;
+      color: #c62828;
+      margin-top: 4px;
+    }
+    .chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: #e8eaf6;
+      font-size: 11px;
+      margin-right: 4px;
+      margin-top: 4px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .toolbar input {
+      max-width: 220px;
+    }
+    .toolbar select {
+      max-width: 180px;
+    }
+    small {
+      color: #777;
+    }
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+    /* Login overlay */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    #loginBox {
+      background: white;
+      padding: 20px 24px;
+      border-radius: 8px;
+      width: 320px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    #loginBox h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #283593;
+    }
+    #loginBox p {
+      font-size: 13px;
+      color: #555;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+    #loginBox label {
+      margin-top: 6px;
+    }
+    #loginBox button {
+      width: 100%;
+      margin-top: 10px;
+    }
+    #loginError {
+      color: #c62828;
+      font-size: 12px;
+      margin-top: 4px;
+      min-height: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login Overlay -->
+<div id="loginOverlay">
+  <div id="loginBox">
+    <h2>Lekha Yatra – Family Login</h2>
+    <p>Set a PIN for first time, then use it to unlock your family’s document vault.</p>
+    <label>Family Name</label>
+    <input id="familyNameInput" type="text" placeholder="e.g., Sharma Family" />
+
+    <label>PIN (4–6 digits)</label>
+    <input id="familyPinInput" type="password" maxlength="6" />
+
+    <button id="loginBtn">Login / Create Family</button>
+    <div id="loginError"></div>
+    <small>This is a simple local lock using browser storage. Do not use real bank PINs.</small>
+  </div>
+</div>
+
+<header>
+  <h1>Lekha Yatra – From Paper Trails To Digital Ease</h1>
+  <div>
+    <span style="font-size:13px;">Member:</span>
+    <select id="memberSelect" style="font-size:13px;padding:4px 6px;">
+      <!-- options added by JS -->
+    </select>
+    <button id="addMemberBtn" class="secondary">Add Member</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Add Document Form -->
+  <h2>Add / Update Document</h2>
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label>Title (e.g., Aadhaar Card, 10th Marks Card)</label>
+        <input id="docTitle" type="text" placeholder="Enter document title" />
+
+        <label>Category</label>
+        <select id="docCategory">
+          <option value="ID">ID</option>
+          <option value="Education">Education</option>
+          <option value="Finance">Finance</option>
+          <option value="Government">Government</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label>Purpose</label>
+        <select id="docPurpose">
+          <option value="General">General</option>
+          <option value="Scholarship">Scholarship</option>
+          <option value="Job">Job</option>
+          <option value="Admission">Admission</option>
+          <option value="Loan">Loan</option>
+        </select>
+
+        <label>Issue Date</label>
+        <input id="docIssueDate" type="date" />
+
+        <label>Expiry Date (if any)</label>
+        <input id="docExpiryDate" type="date" />
+      </div>
+      <div class="col">
+        <label>Name on Document</label>
+        <input id="docNameOn" type="text" placeholder="Exact name on document" />
+
+        <label>ID Number</label>
+        <input id="docIdNumber" type="text" placeholder="ID / certificate number" />
+
+        <label>Issuing Authority</label>
+        <input id="docIssuer" type="text" placeholder="e.g., CBSE, Bank, Govt Dept" />
+
+        <label>Tags (comma separated)</label>
+        <input id="docTags" type="text" placeholder="aadhaar, scholarship, bank" />
+
+        <button id="saveDocBtn">Save Document</button>
+      </div>
+    </div>
+    <small>Note: Files are not uploaded – this demo handles structure, status & readiness logic.</small>
+  </div>
+
+  <!-- Search & Filter -->
+  <h2>Your Documents</h2>
+  <div class="card">
+    <div class="toolbar">
+      <input id="searchInput" type="text" placeholder="Search by title, name, ID, tag..." />
+      <select id="filterCategory">
+        <option value="">All Categories</option>
+        <option value="ID">ID</option>
+        <option value="Education">Education</option>
+        <option value="Finance">Finance</option>
+        <option value="Government">Government</option>
+        <option value="Other">Other</option>
+      </select>
+      <select id="filterStatus">
+        <option value="">All Status</option>
+        <option value="READY">READY</option>
+        <option value="EXPIRING_SOON">EXPIRING_SOON</option>
+        <option value="EXPIRED">EXPIRED</option>
+        <option value="INCOMPLETE">INCOMPLETE</option>
+      </select>
+      <button id="refreshBtn" class="secondary">Refresh</button>
+    </div>
+    <div id="docList"></div>
+  </div>
+
+  <!-- Application Readiness Checker -->
+  <h2>Application Readiness Checker</h2>
+  <div class="card">
+    <div class="toolbar">
+      <select id="readinessPurpose">
+        <option value="Scholarship">Scholarship</option>
+        <option value="Job">Job</option>
+        <option value="Admission">Admission</option>
+        <option value="Loan">Loan</option>
+      </select>
+      <button id="checkReadinessBtn">Check Readiness</button>
+    </div>
+    <div id="readinessResult"></div>
+  </div>
+
+  <!-- Alerts -->
+  <h2>Error & Expiry Alerts</h2>
+  <div class="card">
+    <div id="alertList"></div>
+  </div>
+
+</div>
+
+<script>
+  // ============ STORAGE KEYS ============
+  const MASTER_KEY = 'lekhayatra_families'; // all families meta
+  function familyStorageKey(id) {
+    return 'lekhayatra_family_' + id;
+  }
+
+  // ============ GLOBAL STATE ============
+  let master = loadMaster();
+  let activeFamilyId = null;
+  let state = null; // current family's documents/members
+
+  function loadMaster() {
+    const raw = localStorage.getItem(MASTER_KEY);
+    if (!raw) {
+      return { families: [] }; // {familyId, name, pinHash}
+    }
+    return JSON.parse(raw);
+  }
+
+  function saveMaster() {
+    localStorage.setItem(MASTER_KEY, JSON.stringify(master));
+  }
+
+  function hashPin(pin) {
+    // very simple hash (not secure, just obfuscation for demo)
+    return btoa(pin.split('').reverse().join(''));
+  }
+
+  function findFamilyByName(name) {
+    return master.families.find(f => f.name.toLowerCase() === name.toLowerCase());
+  }
+
+  function loadFamilyState(familyId) {
+    const raw = localStorage.getItem(familyStorageKey(familyId));
+    if (!raw) {
+      return {
+        familyId,
+        members: ['Self'],
+        activeMember: 'Self',
+        documents: []
+      };
+    }
+    return JSON.parse(raw);
+  }
+
+  function saveFamilyState() {
+    if (!activeFamilyId || !state) return;
+    localStorage.setItem(familyStorageKey(activeFamilyId), JSON.stringify(state));
+  }
+
+  // ============ CORE LOGIC ============
+
+  function uid() {
+    return 'doc_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  function getStatus(expiryDate, hasKeyDetails) {
+    if (!hasKeyDetails) return 'INCOMPLETE';
+    if (!expiryDate) return 'READY';
+    const now = new Date();
+    const exp = new Date(expiryDate);
+    const diff = exp - now;
+    const days = diff / (1000 * 60 * 60 * 24);
+    if (days <= 0) return 'EXPIRED';
+    if (days <= 60) return 'EXPIRING_SOON';
+    return 'READY';
+  }
+
+  function getAlertsForMember(member) {
+    if (!state) return [];
+    const alerts = [];
+    const now = new Date();
+    state.documents
+      .filter(d => d.member === member)
+      .forEach(doc => {
+        if (doc.expiryDate) {
+          const exp = new Date(doc.expiryDate);
+          const diff = (exp - now) / (1000 * 60 * 60 * 24);
+          if (diff <= 0) {
+            alerts.push({
+              type: 'EXPIRY',
+              message: `${doc.title} is EXPIRED`,
+              docTitle: doc.title
+            });
+          } else if (diff <= 60) {
+            alerts.push({
+              type: 'EXPIRY',
+              message: `${doc.title} is expiring in ${Math.round(diff)} days`,
+              docTitle: doc.title
+            });
+          }
+        }
+        if (!doc.nameOnDoc || !doc.idNumber) {
+          alerts.push({
+            type: 'MISMATCH',
+            message: `${doc.title} missing key details (name/ID number)`,
+            docTitle: doc.title
+          });
+        }
+      });
+    return alerts;
+  }
+
+  const REQUIRED_DOCS = {
+    Scholarship: ['ID', 'Education', 'Finance'],
+    Job: ['ID', 'Education'],
+    Admission: ['ID', 'Education'],
+    Loan: ['ID', 'Finance']
+  };
+
+  function checkReadiness(documents, purpose) {
+    const required = REQUIRED_DOCS[purpose] || [];
+    const result = {};
+    required.forEach(cat => {
+      result[cat] = { present: false, problems: [] };
+    });
+
+    documents.forEach(doc => {
+      if (!required.includes(doc.category)) return;
+      const cat = result[doc.category];
+      cat.present = true;
+      if (doc.status === 'EXPIRED') cat.problems.push('Expired');
+      if (doc.status === 'EXPIRING_SOON') cat.problems.push('Expiring soon');
+      if (!doc.nameOnDoc || !doc.idNumber) cat.problems.push('Missing key details');
+    });
+
+    return result;
+  }
+
+  // ============ UI ELEMENTS ============
+  const loginOverlay = document.getElementById('loginOverlay');
+  const familyNameInput = document.getElementById('familyNameInput');
+  const familyPinInput = document.getElementById('familyPinInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+
+  const memberSelect = document.getElementById('memberSelect');
+  const addMemberBtn = document.getElementById('addMemberBtn');
+
+  const docTitleInput = document.getElementById('docTitle');
+  const docCategorySelect = document.getElementById('docCategory');
+  const docPurposeSelect = document.getElementById('docPurpose');
+  const docIssueDateInput = document.getElementById('docIssueDate');
+  const docExpiryDateInput = document.getElementById('docExpiryDate');
+  const docNameOnInput = document.getElementById('docNameOn');
+  const docIdNumberInput = document.getElementById('docIdNumber');
+  const docIssuerInput = document.getElementById('docIssuer');
+  const docTagsInput = document.getElementById('docTags');
+  const saveDocBtn = document.getElementById('saveDocBtn');
+
+  const searchInput = document.getElementById('searchInput');
+  const filterCategory = document.getElementById('filterCategory');
+  const filterStatus = document.getElementById('filterStatus');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const docList = document.getElementById('docList');
+
+  const readinessPurposeSelect = document.getElementById('readinessPurpose');
+  const checkReadinessBtn = document.getElementById('checkReadinessBtn');
+  const readinessResultDiv = document.getElementById('readinessResult');
+
+  const alertListDiv = document.getElementById('alertList');
+
+  // ============ RENDER FUNCTIONS ============
+  function renderMembers() {
+    if (!state) return;
+    memberSelect.innerHTML = '';
+    state.members.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = m;
+      if (m === state.activeMember) opt.selected = true;
+      memberSelect.appendChild(opt);
+    });
+  }
+
+  function renderDocuments() {
+    if (!state) return;
+    const q = searchInput.value.trim().toLowerCase();
+    const cat = filterCategory.value;
+    const statusFilter = filterStatus.value;
+    const member = state.activeMember;
+
+    const docs = state.documents
+      .filter(d => d.member === member)
+      .filter(d => {
+        if (cat && d.category !== cat) return false;
+        if (statusFilter && d.status !== statusFilter) return false;
+        if (!q) return true;
+        const text =
+          (d.title || '') + ' ' +
+          (d.nameOnDoc || '') + ' ' +
+          (d.idNumber || '') + ' ' +
+          (d.tags.join(' ') || '');
+        return text.toLowerCase().includes(q);
+      });
+
+    docList.innerHTML = '';
+    if (docs.length === 0) {
+      docList.innerHTML = '<p style="font-size:13px;color:#666;">No documents yet. Add one above.</p>';
+      return;
+    }
+
+    docs.forEach(doc => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const header = document.createElement('div');
+      header.className = 'doc-header';
+
+      const titleEl = document.createElement('div');
+      titleEl.innerHTML = `<strong>${doc.title}</strong><br>
+        <span class="doc-meta">${doc.category} • ${doc.purpose}</span>`;
+
+      const statusEl = document.createElement('span');
+      statusEl.className = 'status-badge ' + doc.status;
+      statusEl.textContent = doc.status;
+
+      header.appendChild(titleEl);
+      header.appendChild(statusEl);
+
+      const body = document.createElement('div');
+      body.style.fontSize = '12px';
+      body.style.marginTop = '6px';
+      body.innerHTML = `
+        <div><b>Name on doc:</b> ${doc.nameOnDoc || '—'}</div>
+        <div><b>ID No:</b> ${doc.idNumber || '—'}</div>
+        <div><b>Issuer:</b> ${doc.issuer || '—'}</div>
+        <div><b>Expiry:</b> ${doc.expiryDate || 'No expiry'}</div>
+      `;
+
+      if (doc.tags.length > 0) {
+        const tagsEl = document.createElement('div');
+        doc.tags.forEach(t => {
+          const span = document.createElement('span');
+          span.className = 'pill';
+          span.textContent = t;
+          tagsEl.appendChild(span);
+        });
+        body.appendChild(tagsEl);
+      }
+
+      card.appendChild(header);
+      card.appendChild(body);
+      docList.appendChild(card);
+    });
+  }
+
+  function renderAlerts() {
+    if (!state) return;
+    const member = state.activeMember;
+    const alerts = getAlertsForMember(member);
+    alertListDiv.innerHTML = '';
+    if (alerts.length === 0) {
+      alertListDiv.innerHTML = '<p style="font-size:13px;color:#666;">No alerts. All good!</p>';
+      return;
+    }
+    alerts.forEach(a => {
+      const div = document.createElement('div');
+      div.className = 'alert';
+      div.textContent = '• ' + a.message;
+      alertListDiv.appendChild(div);
+    });
+  }
+
+  function renderReadiness() {
+    readinessResultDiv.innerHTML = '';
+  }
+
+  // ============ EVENT HANDLERS ============
+
+  loginBtn.addEventListener('click', () => {
+    const familyName = familyNameInput.value.trim();
+    const pin = familyPinInput.value.trim();
+    loginError.textContent = '';
+
+    if (!familyName || !pin) {
+      loginError.textContent = 'Please enter family name and PIN.';
+      return;
+    }
+    if (!/^[0-9]{4,6}$/.test(pin)) {
+      loginError.textContent = 'PIN must be 4–6 digits.';
+      return;
+    }
+
+    let family = findFamilyByName(familyName);
+    const pinHash = hashPin(pin);
+
+    if (!family) {
+      const newId = 'fam_' + Math.random().toString(36).substr(2, 9);
+      family = { familyId: newId, name: familyName, pinHash };
+      master.families.push(family);
+      saveMaster();
+      activeFamilyId = newId;
+      state = loadFamilyState(activeFamilyId);
+      loginOverlay.style.display = 'none';
+      alert('Family created. Welcome, ' + familyName + '!');
+    } else {
+      if (family.pinHash !== pinHash) {
+        loginError.textContent = 'Incorrect PIN for this family.';
+        return;
+      }
+      activeFamilyId = family.familyId;
+      state = loadFamilyState(activeFamilyId);
+      loginOverlay.style.display = 'none';
+    }
+
+    renderMembers();
+    renderDocuments();
+    renderAlerts();
+    renderReadiness();
+  });
+
+  addMemberBtn.addEventListener('click', () => {
+    if (!state) return;
+    const name = prompt('Enter family member name (e.g., Father, Mother, Karishma):');
+    if (!name) return;
+    if (state.members.includes(name)) {
+      alert('Member already exists.');
+      return;
+    }
+    state.members.push(name);
+    state.activeMember = name;
+    saveFamilyState();
+    renderMembers();
+    renderDocuments();
+    renderAlerts();
+    renderReadiness();
+  });
+
+  memberSelect.addEventListener('change', e => {
+    if (!state) return;
+    state.activeMember = e.target.value;
+    saveFamilyState();
+    renderDocuments();
+    renderAlerts();
+    renderReadiness();
+  });
+
+  saveDocBtn.addEventListener('click', () => {
+    if (!state) {
+      alert('Please login first.');
+      return;
+    }
+    const title = docTitleInput.value.trim();
+    if (!title) {
+      alert('Please enter a title.');
+      return;
+    }
+    const category = docCategorySelect.value;
+    const purpose = docPurposeSelect.value;
+    const issueDate = docIssueDateInput.value || null;
+    const expiryDate = docExpiryDateInput.value || null;
+    const nameOnDoc = docNameOnInput.value.trim();
+    const idNumber = docIdNumberInput.value.trim();
+    const issuer = docIssuerInput.value.trim();
+    const tags = docTagsInput.value
+      .split(',')
+      .map(t => t.trim())
+      .filter(t => t.length > 0);
+
+    const hasKeyDetails = !!(nameOnDoc && idNumber);
+    const status = getStatus(expiryDate, hasKeyDetails);
+
+    const doc = {
+      id: uid(),
+      member: state.activeMember,
+      title,
+      category,
+      purpose,
+      issueDate,
+      expiryDate,
+      nameOnDoc,
+      idNumber,
+      issuer,
+      tags,
+      status
+    };
+
+    state.documents.push(doc);
+    saveFamilyState();
+
+    docTitleInput.value = '';
+    docIssueDateInput.value = '';
+    docExpiryDateInput.value = '';
+    docNameOnInput.value = '';
+    docIdNumberInput.value = '';
+    docIssuerInput.value = '';
+    docTagsInput.value = '';
+
+    renderDocuments();
+    renderAlerts();
+    alert('Document saved for ' + state.activeMember);
+  });
+
+  refreshBtn.addEventListener('click', () => {
+    renderDocuments();
+    renderAlerts();
+  });
+
+  searchInput.addEventListener('input', () => {
+    renderDocuments();
+  });
+
+  filterCategory.addEventListener('change', () => {
+    renderDocuments();
+  });
+
+  filterStatus.addEventListener('change', () => {
+    renderDocuments();
+  });
+
+  checkReadinessBtn.addEventListener('click', () => {
+    if (!state) return;
+    const purpose = readinessPurposeSelect.value;
+    const member = state.activeMember;
+    const docs = state.documents.filter(d => d.member === member);
+    const readiness = checkReadiness(docs, purpose);
+
+    readinessResultDiv.innerHTML = '';
+    const required = REQUIRED_DOCS[purpose] || [];
+    if (required.length === 0) {
+      readinessResultDiv.innerHTML = '<p style="font-size:13px;">No template for this purpose.</p>';
+      return;
+    }
+
+    required.forEach(cat => {
+      const info = readiness[cat];
+      const row = document.createElement('div');
+      row.style.marginBottom = '6px';
+
+      const label = document.createElement('span');
+      label.className = 'chip';
+      label.textContent = cat;
+
+      const text = document.createElement('span');
+      text.style.fontSize = '12px';
+      text.style.marginLeft = '8px';
+
+      if (!info.present) {
+        text.style.color = '#c62828';
+        text.textContent = 'Missing document';
+      } else if (info.problems.length === 0) {
+        text.style.color = '#2e7d32';
+        text.textContent = 'Present and ready';
+      } else {
+        text.style.color = '#c62828';
+        text.textContent = 'Issues: ' + info.problems.join(', ');
+      }
+
+      row.appendChild(label);
+      row.appendChild(text);
+      readinessResultDiv.appendChild(row);
+    });
+  });
+
+  // On load: login overlay is shown; rest initializes after login
+</script>
+</body>
+</html>
